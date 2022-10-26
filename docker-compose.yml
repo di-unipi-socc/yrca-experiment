@@ -1,5 +1,5 @@
 ### Online Boutique (https://github.com/GoogleCloudPlatform/microservices-demo)
-### Docker-compose file made by Luca Roveroni (https://github.com/di-unipi-socc/roveroni)
+### Docker-compose file made by Luca Roveroni (https://github.com/di-unipi-socc/log-enabled-online-boutique)
 
 # Services' ports must be reallocated:
 # Frontend: 8888
