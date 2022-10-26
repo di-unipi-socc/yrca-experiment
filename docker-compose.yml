@@ -1,0 +1,239 @@
+### Online Boutique (https://github.com/GoogleCloudPlatform/microservices-demo)
+### Docker-compose file made by Luca Roveroni (https://github.com/di-unipi-socc/roveroni)
+
+# Services' ports must be reallocated:
+# Frontend: 8888
+# Email: 8080
+# Currency: 7000
+# Checkout: 5050
+# Cart: 7070
+# Ad: 9555
+# Recommendation: 8000
+# Catalog: 3550
+# Payment: 50051
+# Shipping: 50052
+
+version: '3.8'
+
+services:
+  
+  # -------------------
+  #   Load Generator
+  # -------------------
+#  loadgenerator:
+#    image: lucaroveroni/loadgenerator:latest
+#    hostname: loadgenerator
+#    environment:
+#      - FRONTEND_ADDR=frontend:8888
+#      - USERS=1
+#    depends_on:
+#      - "frontend"
+
+  # ------------------
+  #    Frontend
+  # ------------------
+  frontend:
+    image: lucaroveroni/frontend:latest
+    hostname: frontend
+    ports: 
+      - "8888:8888"
+    environment:
+      - PORT=8888
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
+      - CURRENCY_SERVICE_ADDR=currencyservice:7000
+      - CART_SERVICE_ADDR=cartservice:7070
+      - RECOMMENDATION_SERVICE_ADDR=recommendationservice:8000
+      - SHIPPING_SERVICE_ADDR=shippingservice:50052
+      - CHECKOUT_SERVICE_ADDR=checkoutservice:5050
+      - AD_SERVICE_ADDR=adservice:9555
+      - DISABLE_TRACING=1s
+      - DISABLE_PROFILER=1
+    depends_on:
+      - "productcatalogservice"
+      - "currencyservice"
+      - "cartservice"
+      - "recommendationservice"
+      - "shippingservice"
+      - "checkoutservice"
+      - "adservice"
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  # ------------
+  #    Email
+  # ------------
+  emailservice:
+    image: lucaroveroni/emailservice:latest
+    hostname: emailservice
+    ports: 
+      - "8080"
+    environment:
+      - PORT=8080
+      - DISABLE_TRACING=1
+      - DISABLE_PROFILER=1
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  # ------------
+  #    Currency
+  # ------------
+  currencyservice:
+    image: lucaroveroni/currencyservice:latest
+    hostname: currencyservice
+    ports: 
+      - "7000"
+    environment:
+      - PORT=7000
+      - DISABLE_TRACING=1
+      - DISABLE_PROFILER=1
+      - DISABLE_DEBUGGER=1
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  # ------------
+  #    Checkout
+  # ------------
+  checkoutservice:
+    image: lucaroveroni/checkoutservice:latest
+    hostname: checkoutservice
+    ports: 
+      - "5050"
+    environment:
+      - PORT=5050
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
+      - SHIPPING_SERVICE_ADDR=shippingservice:50052
+      - PAYMENT_SERVICE_ADDR=paymentservice:50051
+      - EMAIL_SERVICE_ADDR=emailservice:8080
+      - CURRENCY_SERVICE_ADDR=currencyservice:7000
+      - CART_SERVICE_ADDR=cartservice:7070
+      - DISABLE_TRACING=1
+      - DISABLE_PROFILER=1
+    depends_on:
+      - "productcatalogservice"
+      - "shippingservice"
+      - "paymentservice"
+      - "emailservice"
+      - "currencyservice"
+      - "cartservice"
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  # ------------
+  #    Cart
+  # ------------
+  cartservice:
+    image: lucaroveroni/cartservice:latest
+    hostname: cartservice
+    ports: 
+      - "7070"
+    environment:
+      - PORT=7070
+      - REDIS_ADDR=redis-cart:6379
+    depends_on:
+      - "redis-cart"
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  redis-cart:
+    image: redis:alpine
+    hostname: redis-cart
+    ports: 
+      - "6379:6379"
+
+  # ------------
+  #    Ad
+  # ------------
+  adservice:
+    image: lucaroveroni/adservice:latest
+    hostname: adservice
+    ports: 
+      - "9555"
+    environment:
+      - PORT=9555
+      - DISABLE_TRACING=1
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  # -------------------
+  #    Recommendation
+  # -------------------
+  recommendationservice:
+    image: lucaroveroni/recommendationservice:latest
+    hostname: recommendationservice
+    ports: 
+      - "8000"
+    environment:
+      - PORT=8000
+      - PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550
+      - DISABLE_TRACING=1
+      - DISABLE_PROFILER=1
+      - DISABLE_DEBUGGER=1
+    depends_on:
+      - "productcatalogservice"
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  # --------------------
+  #    Product Catalog
+  # --------------------
+  productcatalogservice:
+    image: lucaroveroni/productcatalogservice:latest
+    hostname: productcatalogservice
+    ports: 
+      - "3550"
+    environment:
+      - PORT=3550
+      - DISABLE_TRACING=1
+      - DISABLE_PROFILER=1
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  # -------------
+  #    Payment
+  # -------------
+  paymentservice:
+    image: lucaroveroni/paymentservice:latest
+    hostname: paymentservices
+    ports: 
+      - "50051"
+    environment:
+      - PORT=50051
+      - DISABLE_TRACING=1
+      - DISABLE_PROFILER=1
+      - DISABLE_DEBUGGER=1
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  # -------------
+  #    Shipping
+  # -------------
+  shippingservice:
+    image: lucaroveroni/shippingservice:latest
+    hostname: shippingservice
+    ports: 
+      - "50052"
+    environment:
+      - PORT=50052
+      - DISABLE_TRACING=1
+      - DISABLE_PROFILER=1
+    logging:
+      driver: gelf
+      options: {tag: front-end, gelf-address: 'udp://localhost:12201'}
+
+  # ---------------
+  #    Logstash
+  # ---------------
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.1.0
+    volumes: ['.:/etc/logstash']
+    command: logstash -f /etc/logstash/logstash.conf
+    ports: ['12201:12201/udp']
