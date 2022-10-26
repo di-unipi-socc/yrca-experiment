@@ -2,9 +2,11 @@
 The following repository is used to document all the performed scenario analyzed in Luca Roveroni's Master Thesis project.
 
 ##  Online Boutique
-All the available material refers to Online Boutique application that have been modified to be [log-enabled](https://github.com/di-unipi-socc/log-enabled-online-boutique).
+All the available material refers to [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) application that have been modified to be [log-enabled](https://github.com/di-unipi-socc/log-enabled-online-boutique).
 To simplify the deployment process a docker-compose.yml file has been developed to run Online Boutique with Docker Swarm and a logstash.conf file to correctly parse and transform the incoming logs from Docker.
 Use the personalized scripts inside the /scripts folder to run and stop the application, furthermore execute yRCA tests accordingly the proposed scanarios.
+
+**NOTE**: yRCA uses templates to correctly explain failure events, use the provided template.yml file to run the tests
 
 The results obtain by the master thesis project are structured as the following structure:
 - Scenario X
