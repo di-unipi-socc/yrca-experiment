@@ -1,7 +1,7 @@
-## yRCA Experiments
+# yRCA Experiments
 The following repository is used to document all the performed scenario analyzed in Luca Roveroni's Master Thesis project.
 
-#  Online Boutique
+##  Online Boutique
 All the available material refers to Online Boutique application that have been modified to be [log-enabled](https://github.com/di-unipi-socc/log-enabled-online-boutique).
 To simplify the deployment process a docker-compose.yml file has been developed to run Online Boutique with Docker Swarm.
 Use the personalized scripts inside the /scripts folder to run and stop the application, furthermore execute yRCA tests accordingly the proposed scanarios.
@@ -13,10 +13,10 @@ The results obtain by the master thesis project are structured as the following 
   - yrca_output.png (yRCA output screenshot)
   - readme.txt (brief scenario explaination with command to execute)
 
-# Run tests
+## Run tests
 Every scenario can be tested by simply replacing the files inside the "src" folder into the corresponding Online Boutique's microservice folder.
 
 Follow the readme.txt file in each "Scenario" folder to run the desired test.
 
-# Help
+## Help
 For any doubts or support, feel free to contact me via email at luca.roveroni@studenti.unipi.it
