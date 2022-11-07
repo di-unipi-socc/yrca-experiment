@@ -20,5 +20,25 @@ Every scenario can be tested by simply replacing the files inside the "src" fold
 
 Follow the readme.txt file in each "Scenario" folder to run the desired test.
 
+# Chaos testing
+To perform random tests I developed a simple script to perform random container deletion.
+The chaos_test.py file can be used to remove cyclically Docker containers of the specified Docker Swarm Stack.
+
+To execute the script make sure to install Python 3 and execute it according to the following parameters:
+
+```
+┌─────────────────────── HOW TO USE ───────────────────────────┐
+│                                                              │
+│ python3 chaos_test.py STACK_NAME NUM_SERVICES CYCLES MINUTES │
+│                                                              │
+├───────────────────────── PARAMETERS ─────────────────────────┤
+│                                                              │
+│ STACK_NAME: onlineBoutique - Docker Swarm deploy name        │
+│ NUM_SERVICES: 10 - Number of containers to stop              │
+│ CYCLES: 3 - Repeat the chaos test for CYCLES times           │
+│ MINUTES: 8 - Wait time between each cycle                    │
+└──────────────────────────────────────────────────────────────┘
+```
+
 ## Help
 For any doubts or support, feel free to contact me via email at luca.roveroni@studenti.unipi.it
