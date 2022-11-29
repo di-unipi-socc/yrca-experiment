@@ -9,4 +9,4 @@ client_timeout:
 server_receive:
   - 'Received request from (?P<service>.*) \(request_id: (?P<requestId>.*)\)'
 server_send:
-  - 'Answered to request from (?P<service>.*) \(request_id: (?P<requestId>.*)\)'
+  - 'Answered request from (?P<service>.*) \(request_id: (?P<requestId>.*)\)'
