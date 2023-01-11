@@ -29,14 +29,14 @@ To execute the script make sure to install Python 3 and execute it according to 
 ```
 ┌─────────────────────── HOW TO USE ───────────────────────────┐
 │                                                              │
-│ python3 chaos_test.py STACK_NAME NUM_SERVICES CYCLES MINUTES │
+│ python3 chaos_test.py STACK_NAME NUM_SERVICES CYCLES SECONDS │
 │                                                              │
 ├───────────────────────── PARAMETERS ─────────────────────────┤
 │                                                              │
 │ STACK_NAME: onlineBoutique - Docker Swarm deploy name        │
 │ NUM_SERVICES: 10 - Number of containers to stop              │
 │ CYCLES: 3 - Repeat the chaos test for CYCLES times           │
-│ MINUTES: 8 - Wait time between each cycle                    │
+│ SECONDS: 8 - Wait time between each cycle                    │
 └──────────────────────────────────────────────────────────────┘
 ```
 
