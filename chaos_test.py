@@ -9,20 +9,20 @@ stack_name = ""
 num_services = 0
 tot_services = 0
 cycles = 0
-minutes = 0
+seconds = 0
 
 # Help function
 def help():
     print('\n┌─────────────────────── HOW TO USE ───────────────────────────┐')
     print("│                                                              │")
-    print('│ python3 chaos_test.py STACK_NAME NUM_SERVICES CYCLES MINUTES │')
+    print('│ python3 chaos_test.py STACK_NAME NUM_SERVICES CYCLES SECONDS │')
     print("│                                                              │")
     print("├───────────────────────── PARAMETERS ─────────────────────────┤")
     print("│                                                              │")
     print("│ STACK_NAME: onlineBoutique - Docker Swarm deploy name        │")
     print("│ NUM_SERVICES: 10 - Number of containers to stop              │")
     print("│ CYCLES: 3 - Repeat the chaos test for CYCLES times           │")
-    print("│ MINUTES: 8 - Wait time between each cycle                    │")
+    print("│ SECONDS: 8 - Wait time between each cycle                    │")
     print("└──────────────────────────────────────────────────────────────┘\n")
 
 # Check app parameters
@@ -47,10 +47,10 @@ def checkParams(args):
         exit()
     cycles = int(args[3])
     
-    if (int(args[4]) <= 0 and int(args[4]) > 60):
-        print("Invalid minutes value, use positive integer values between 1 and 60.\n")
+    if (int(args[4]) <= 0 and int(args[4]) > 600):
+        print("Invalid seconds value, use positive integer values between 1 and 600.\n")
         exit()
-    minutes = int(args[4])
+    seconds = int(args[4])
 
     print("\n┌────────────────────────── CHAOS TEST ───────────────────────────")
     print("│")
@@ -72,7 +72,6 @@ def run():
         removed_services = []
         print("│")
         print("├── Cycle #" + str(cycle + 1) + " started")
-        print("│")
         print("│ Removed services:")
         
         # Select two random services and remove containers
@@ -82,7 +81,7 @@ def run():
             service_name = str(subprocess.check_output(command, shell=True))[2:-3]    
             
             # Avoid removing logstash and frontend container
-            if (service_name != stack_name + "_logstash" and service_name != stack_name + "_frontend"):
+            if (service_name != stack_name + "_logstash" and service_name != stack_name + "_frontend" and service_name != stack_name + "_loadgenerator"):
                 command = "docker service rm " + service_name
                 subprocess.check_output(command, shell=True)
                 removed_services.append(service_name)
@@ -91,24 +90,19 @@ def run():
         print("│")
         
         # Wait
-        print("├── Waiting...")
-        print("│")
         log_file.write("\n")
-        time.sleep(minutes*60)
+        time.sleep(seconds)
         
         # Reactivate removed services
         command = "./scripts/run.sh > /dev/null 2>&1"
         result = subprocess.check_output(command, shell=True)
-        print("│ Services added:")
 
         for service in removed_services:
             log_file.write(service + " added at " + str(datetime.datetime.now())[:-3] + "\n")
-            print("│ - " + str(service) + " at " + str(datetime.datetime.now())[:-3])
         
         # Extra wait for container restart
-        time.sleep(5)
+        time.sleep(10)
     
-    print("│")
     print("└──────────────────────────── FINISH ─────────────────────────────\n")
     log_file.write("├────── CHAOS TEST ENDED ──────┤\n")
     log_file.close()
