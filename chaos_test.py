@@ -85,7 +85,7 @@ def run():
                 command = "docker service rm " + service_name
                 subprocess.check_output(command, shell=True)
                 removed_services.append(service_name)
-                log_file.write(service_name + " removed at " + str(datetime.datetime.now())[:-3] + "\n")
+                log_file.write(service_name + " removed at " + str(datetime.datetime.now())[:-3])
                 print("│ - " + service_name + " at " + str(datetime.datetime.now())[:-3])
 
         # Wait
