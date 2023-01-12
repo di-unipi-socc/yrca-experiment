@@ -41,12 +41,12 @@ def checkParams(args):
         print("Invalid number of services, retry.\n")
         exit()
     num_services = int(args[2])
-    
+
     if (int(args[3]) <= 0):
         print("Invalid cycles value, use positive integer higher than 1.\n")
         exit()
     cycles = int(args[3])
-    
+
     if (int(args[4]) <= 0 and int(args[4]) > 600):
         print("Invalid seconds value, use positive integer values between 1 and 600.\n")
         exit()
@@ -62,49 +62,48 @@ def checkParams(args):
 def run():
     # Open or create new logging file
     log_file = open("chaos_test.log", "w")
-    log_file.write("├───── CHAOS TEST STARTED ─────┤\n")
-    
+    log_file.write("CHAOS TEST STARTED\n\n")
+
     random.seed()
     global cycles
-    
+
     # Repeat choas test CYCLES times
     for cycle in range(cycles):
         removed_services = []
         print("│")
         print("├── Cycle #" + str(cycle + 1) + " started")
         print("│ Removed services:")
-        
+
         # Select two random services and remove containers
         while(len(removed_services) < num_services):
             position = random.randint(1, tot_services) + 1
             command = "docker service ls | head -" + str(position) + " | tail -1 | awk '{print $2}'"
-            service_name = str(subprocess.check_output(command, shell=True))[2:-3]    
-            
+            service_name = str(subprocess.check_output(command, shell=True))[2:-3]
+
             # Avoid removing logstash and frontend container
             if (service_name != stack_name + "_logstash" and service_name != stack_name + "_frontend" and service_name != stack_name + "_loadgenerator"):
                 command = "docker service rm " + service_name
                 subprocess.check_output(command, shell=True)
                 removed_services.append(service_name)
-                log_file.write("\n" + service_name + " removed at " + str(datetime.datetime.now())[:-3] + "\n")
+                log_file.write(service_name + " removed at " + str(datetime.datetime.now())[:-3] + "\n")
                 print("│ - " + service_name + " at " + str(datetime.datetime.now())[:-3])
-        print("│")
-        
+
         # Wait
         log_file.write("\n")
         time.sleep(seconds)
-        
+
         # Reactivate removed services
         command = "./scripts/run.sh > /dev/null 2>&1"
         result = subprocess.check_output(command, shell=True)
 
         for service in removed_services:
             log_file.write(service + " added at " + str(datetime.datetime.now())[:-3] + "\n")
-        
+
         # Extra wait for container restart
         time.sleep(10)
-    
+
     print("└──────────────────────────── FINISH ─────────────────────────────\n")
-    log_file.write("├────── CHAOS TEST ENDED ──────┤\n")
+    log_file.write("\nCHAOS TEST ENDED\n")
     log_file.close()
 
 # Main function
