@@ -56,7 +56,7 @@ def checkParams(args):
     print("│")
     print("├── Stack:", stack_name)
     print("├── Total services: " + str(tot_services) + " (" + str(num_services) + " removed)")
-    print("├── Cycles:", cycles, "── Wait time:", minutes, "min")
+    print("├── Cycles:", cycles, "── Wait time:", seconds, "sec")
 
 # Applicaiton core logic
 def run():
