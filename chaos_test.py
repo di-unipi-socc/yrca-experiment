@@ -64,7 +64,7 @@ def run():
     log_file = open("chaos_test.log", "w")
     log_file.write("CHAOS TEST STARTED\n\n")
 
-    random.seed()
+    random.seed(random.random())
     global cycles
 
     # Repeat choas test CYCLES times
@@ -76,7 +76,7 @@ def run():
 
         # Select two random services and remove containers
         while(len(removed_services) < num_services):
-            position = random.randint(1, tot_services) + 1
+            position = random.randint(1, tot_services)
             command = "docker service ls | head -" + str(position) + " | tail -1 | awk '{print $2}'"
             service_name = str(subprocess.check_output(command, shell=True))[2:-3]
 
