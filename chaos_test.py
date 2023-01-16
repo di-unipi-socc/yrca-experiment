@@ -76,7 +76,7 @@ def run():
 
         # Select two random services and remove containers
         while(len(removed_services) < num_services):
-            position = random.randint(1, tot_services)
+            position = random.randint(1, tot_services) + 1
             command = "docker service ls | head -" + str(position) + " | tail -1 | awk '{print $2}'"
             service_name = str(subprocess.check_output(command, shell=True))[2:-3]
 
@@ -85,11 +85,10 @@ def run():
                 command = "docker service rm " + service_name
                 subprocess.check_output(command, shell=True)
                 removed_services.append(service_name)
-                log_file.write(service_name + " removed at " + str(datetime.datetime.now())[:-3])
+                log_file.write(service_name + " removed at " + str(datetime.datetime.now())[:-3] + "\n")
                 print("│ - " + service_name + " at " + str(datetime.datetime.now())[:-3])
 
         # Wait
-        log_file.write("\n")
         time.sleep(seconds)
 
         # Reactivate removed services
@@ -99,8 +98,9 @@ def run():
         for service in removed_services:
             log_file.write(service + " added at " + str(datetime.datetime.now())[:-3] + "\n")
 
-        # Extra wait for container restart
-        time.sleep(10)
+        # Extra wait for container restart and loadgenerator execution
+	log_file.write("\n")
+        time.sleep(30)
 
     print("└──────────────────────────── FINISH ─────────────────────────────\n")
     log_file.write("\nCHAOS TEST ENDED\n")

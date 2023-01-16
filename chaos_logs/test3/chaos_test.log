@@ -1,0 +1,24 @@
+CHAOS TEST STARTED
+
+onlineBoutique_emailservice removed at 2023-01-16 11:42:31.324onlineBoutique_redis-cart removed at 2023-01-16 11:42:31.500onlineBoutique_shippingservice removed at 2023-01-16 11:42:31.634
+onlineBoutique_emailservice added at 2023-01-16 11:42:49.929
+onlineBoutique_redis-cart added at 2023-01-16 11:42:49.929
+onlineBoutique_shippingservice added at 2023-01-16 11:42:49.929
+onlineBoutique_currencyservice removed at 2023-01-16 11:43:20.009onlineBoutique_productcatalogservice removed at 2023-01-16 11:43:20.107onlineBoutique_redis-cart removed at 2023-01-16 11:43:20.256
+onlineBoutique_currencyservice added at 2023-01-16 11:43:38.221
+onlineBoutique_productcatalogservice added at 2023-01-16 11:43:38.221
+onlineBoutique_redis-cart added at 2023-01-16 11:43:38.221
+onlineBoutique_checkoutservice removed at 2023-01-16 11:44:08.311onlineBoutique_shippingservice removed at 2023-01-16 11:44:08.362onlineBoutique_redis-cart removed at 2023-01-16 11:44:08.455
+onlineBoutique_checkoutservice added at 2023-01-16 11:44:26.666
+onlineBoutique_shippingservice added at 2023-01-16 11:44:26.666
+onlineBoutique_redis-cart added at 2023-01-16 11:44:26.666
+onlineBoutique_paymentservice removed at 2023-01-16 11:44:56.730onlineBoutique_productcatalogservice removed at 2023-01-16 11:44:56.795onlineBoutique_emailservice removed at 2023-01-16 11:44:56.844
+onlineBoutique_paymentservice added at 2023-01-16 11:45:15.142
+onlineBoutique_productcatalogservice added at 2023-01-16 11:45:15.142
+onlineBoutique_emailservice added at 2023-01-16 11:45:15.142
+onlineBoutique_emailservice removed at 2023-01-16 11:45:45.330onlineBoutique_checkoutservice removed at 2023-01-16 11:45:45.452onlineBoutique_paymentservice removed at 2023-01-16 11:45:45.538
+onlineBoutique_emailservice added at 2023-01-16 11:46:04.053
+onlineBoutique_checkoutservice added at 2023-01-16 11:46:04.053
+onlineBoutique_paymentservice added at 2023-01-16 11:46:04.053
+
+CHAOS TEST ENDED

@@ -1,0 +1,14 @@
+CHAOS TEST STARTED
+
+onlineBoutique_checkoutservice removed at 2023-01-16 09:42:14.903
+onlineBoutique_checkoutservice added at 2023-01-16 09:42:33.050
+onlineBoutique_emailservice removed at 2023-01-16 09:43:03.161
+onlineBoutique_emailservice added at 2023-01-16 09:43:21.187
+onlineBoutique_currencyservice removed at 2023-01-16 09:43:51.287
+onlineBoutique_currencyservice added at 2023-01-16 09:44:09.377
+onlineBoutique_paymentservice removed at 2023-01-16 09:44:39.449
+onlineBoutique_paymentservice added at 2023-01-16 09:44:57.812
+onlineBoutique_cartservice removed at 2023-01-16 09:45:27.919
+onlineBoutique_cartservice added at 2023-01-16 09:45:45.896
+
+CHAOS TEST ENDED
