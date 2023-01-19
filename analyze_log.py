@@ -17,9 +17,9 @@ def prepare():
     global removed_services
     
     # Copy all necessary files
-    subprocess.run('cp ' + folder_path + 'chaos_test.log .', shell=True)
-    subprocess.run('cp ' + folder_path + 'all.json .', shell=True)
-    subprocess.run('cat all.json | grep ERROR > all_errors.json', shell=True)
+    subprocess.check_output('cp ' + folder_path + 'chaos_test.log .', shell=True)
+    subprocess.check_output('cp ' + folder_path + 'all.json .', shell=True)
+    subprocess.check_output('cat all.json | grep ERROR > all_errors.json', shell=True)
     
     # Open chaos_script.log file
     chaos_log = open('chaos_test.log', 'r')

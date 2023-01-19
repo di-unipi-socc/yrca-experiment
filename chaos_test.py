@@ -57,7 +57,7 @@ def checkParams(args):
     print("├── Total services: " + str(tot_services) + " (" + str(num_services) + " removed)")
     print("├── Cycles:", cycles, "── Wait time:", seconds, "sec")
 
-# Applicaiton core logic
+# Applicaiton core logic
 def run():
     # Open or create new logging file
     log_file = open("chaos_test.log", "w")
