@@ -22,7 +22,7 @@ def help():
     print("│ STACK_NAME: onlineBoutique - Docker Swarm deploy name        │")
     print("│ NUM_SERVICES: 10 - Number of containers to stop              │")
     print("│ CYCLES: 3 - Repeat the chaos test for CYCLES times           │")
-    print("│ SECONDS: 8 - Wait time between each cycle                    │")
+    print("│ SECONDS: 60 - Wait time between each cycle                   │")
     print("└──────────────────────────────────────────────────────────────┘\n")
 
 # Check app parameters
@@ -34,8 +34,7 @@ def checkParams(args):
     global minutes
 
     stack_name = str(args[1])
-    # docker service ls
-    tot_services = int(subprocess.check_output("docker service ls | wc -l", shell=True)) - 1
+    tot_services = int(subprocess.run("docker service ls | wc -l", shell=True)) - 1
 
     if (int(args[2]) <= 0 or int(args[2]) > tot_services):
         print("Invalid number of services, retry.\n")
@@ -78,28 +77,27 @@ def run():
         while(len(removed_services) < num_services):
             position = random.randint(1, tot_services) + 1
             command = "docker service ls | head -" + str(position) + " | tail -1 | awk '{print $2}'"
-            service_name = str(subprocess.check_output(command, shell=True))[2:-3]
+            service_name = str(subprocess.run(command, shell=True))[2:-3]
 
             # Avoid removing logstash and frontend container
             if (service_name != stack_name + "_logstash" and service_name != stack_name + "_frontend" and service_name != stack_name + "_loadgenerator"):
-                command = "docker service rm " + service_name
-                subprocess.check_output(command, shell=True)
-                removed_services.append(service_name)
                 log_file.write(service_name + " removed at " + str(datetime.datetime.now())[:-3] + "\n")
                 print("│ - " + service_name + " at " + str(datetime.datetime.now())[:-3])
+                
+                command = "docker service " + service_name + " scale=0"
+                subprocess.run(command, shell=True)
+                removed_services.append(service_name)
 
         # Wait
         time.sleep(seconds)
 
         # Reactivate removed services
-        command = "./scripts/run.sh > /dev/null 2>&1"
-        result = subprocess.check_output(command, shell=True)
-
         for service in removed_services:
+            result = subprocess.run("docker service " + service + " scale=1", shell=True)
             log_file.write(service + " added at " + str(datetime.datetime.now())[:-3] + "\n")
 
         # Extra wait for container restart and loadgenerator execution
-	log_file.write("\n")
+        log_file.write("\n")
         time.sleep(30)
 
     print("└──────────────────────────── FINISH ─────────────────────────────\n")
