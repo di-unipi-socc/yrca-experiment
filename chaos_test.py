@@ -84,7 +84,7 @@ def run():
                 log_file.write(service_name + " removed at " + str(datetime.datetime.now())[:-3] + "\n")
                 print("│ - " + service_name + " at " + str(datetime.datetime.now())[:-3])
                 
-                command = "docker service " + service_name + " scale=0"
+                command = "docker service scale " + service_name + "=0"
                 subprocess.run(command, shell=True)
                 removed_services.append(service_name)
 
@@ -93,7 +93,7 @@ def run():
 
         # Reactivate removed services
         for service in removed_services:
-            result = subprocess.run("docker service " + service + " scale=1", shell=True)
+            result = subprocess.run("docker service scale " + service + "=1", shell=True)
             log_file.write(service + " added at " + str(datetime.datetime.now())[:-3] + "\n")
 
         # Extra wait for container restart and loadgenerator execution

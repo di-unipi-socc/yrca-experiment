@@ -17,9 +17,9 @@ def prepare():
     global removed_services
     
     # Copy all necessary files
-    subprocess.check_output('cp ' + folder_path + 'chaos_test.log .', shell=True)
-    subprocess.check_output('cp ' + folder_path + 'all.json .', shell=True)
-    subprocess.check_output('cat all.json | grep ERROR > all_errors.json', shell=True)
+    subprocess.run('cp ' + folder_path + 'chaos_test.log .', shell=True)
+    subprocess.run('cp ' + folder_path + 'all.json .', shell=True)
+    subprocess.run('cat all.json | grep ERROR > all_errors.json', shell=True)
     
     # Open chaos_script.log file
     chaos_log = open('chaos_test.log', 'r')
@@ -62,8 +62,7 @@ def analyze():
         timestamp = str(data['message'].split(' - ')[0])
         
         # Execute yRCA and let it explain the error
-        command = './scripts/yrca.sh'
-        yrca_output = str(subprocess.check_output(command, shell=True))[2:-3]
+        yrca_output = str(subprocess.run('./scripts/yrca.sh', shell=True))[2:-3]
         
         # Looking for root cause and compare it with chaos_test.log
         # We can distinguish three possible yrca outputs:
