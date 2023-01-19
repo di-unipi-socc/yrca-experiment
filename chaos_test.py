@@ -2,7 +2,7 @@ import sys
 import subprocess
 import random
 import time
-import datetime
+from datetime import datetime
 
 # Global vars
 stack_name = ""
@@ -31,10 +31,10 @@ def checkParams(args):
     global tot_services
     global num_services
     global cycles
-    global minutes
+    global seconds
 
     stack_name = str(args[1])
-    tot_services = int(subprocess.run("docker service ls | wc -l", shell=True)) - 1
+    tot_services = int(subprocess.check_output("docker service ls | wc -l", shell=True)) - 1
 
     if (int(args[2]) <= 0 or int(args[2]) > tot_services):
         print("Invalid number of services, retry.\n")
@@ -65,6 +65,7 @@ def run():
 
     random.seed(random.random())
     global cycles
+    global seconds
 
     # Repeat choas test CYCLES times
     for cycle in range(cycles):
@@ -77,15 +78,14 @@ def run():
         while(len(removed_services) < num_services):
             position = random.randint(1, tot_services) + 1
             command = "docker service ls | head -" + str(position) + " | tail -1 | awk '{print $2}'"
-            service_name = str(subprocess.run(command, shell=True))[2:-3]
+            service_name = str(subprocess.check_output(command, shell=True))[2:-3]
 
-            # Avoid removing logstash and frontend container
+            # Avoid removing logstash, loadgenerator and frontend containers
             if (service_name != stack_name + "_logstash" and service_name != stack_name + "_frontend" and service_name != stack_name + "_loadgenerator"):
-                log_file.write(service_name + " removed at " + str(datetime.datetime.now())[:-3] + "\n")
-                print("│ - " + service_name + " at " + str(datetime.datetime.now())[:-3])
+                log_file.write(service_name + " removed at " + str(datetime.now())[:-3] + "\n")
+                print("│ - " + service_name + " at " + str(datetime.now())[:-3])
                 
-                command = "docker service scale " + service_name + "=0"
-                subprocess.run(command, shell=True)
+                subprocess.check_output("docker service scale " + service_name + "=0", shell=True)
                 removed_services.append(service_name)
 
         # Wait
@@ -93,12 +93,8 @@ def run():
 
         # Reactivate removed services
         for service in removed_services:
-            result = subprocess.run("docker service scale " + service + "=1", shell=True)
-            log_file.write(service + " added at " + str(datetime.datetime.now())[:-3] + "\n")
-
-        # Extra wait for container restart and loadgenerator execution
-        log_file.write("\n")
-        time.sleep(30)
+            subprocess.check_output("docker service scale " + service + "=1", shell=True)
+            log_file.write(service + " added at " + str(datetime.now())[:-3] + "\n")
 
     print("└──────────────────────────── FINISH ─────────────────────────────\n")
     log_file.write("\nCHAOS TEST ENDED\n")
