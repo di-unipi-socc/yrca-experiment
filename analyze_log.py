@@ -36,6 +36,8 @@ def prepare():
 
         # Insert timestamps: first remotion timestamp and second insertion timestamp
         removed_services[service_name].append(timestamp)
+    
+    print(removed_services)
 
 # Open log file and analyze it
 def analyze():
@@ -61,7 +63,9 @@ def analyze():
         timestamp = str(data['message'].split(' - ')[0])
         
         # Execute yRCA and let it explain the error
-        yrca_output = str(subprocess.run('./scripts/yrca.sh', shell=True))[2:-3]
+        yrca_output = str(subprocess.check_output('./scripts/yrca.sh', shell=True))[2:-3]
+
+        print(yrca_output)
         
         # Looking for root cause and compare it with chaos_test.log
         # We can distinguish three possible yrca outputs:
@@ -86,7 +90,6 @@ def analyze():
             else:
                 found_explanations = yrca_output.split('[0.')
                 found_explanations.pop(0)
-
                 causes = []
                 
                 for explanation in found_explanations:
@@ -106,17 +109,20 @@ def searchContainer(serviceName, timestamp, yrca_output, error_json):
     
     # Parse timestramp from string to date type
     error = parser.parse(timestamp)
-    
-    # Get timestamps for service down period
-    remotion_period = removed_services['onlineBoutique_' + serviceName]
     correct_cause = False
+
+    # Get timestamps for service down period if service exists
+    if 'onlineBoutique_' + serviceName not in removed_services:
+        return correct_cause
     
+    remotion_period = removed_services['onlineBoutique_' + serviceName]
+
     # Compare error timestamp with down time period
     for i in range(0, len(remotion_period), 2):
         start = parser.parse(remotion_period[i])
         end = parser.parse(remotion_period[i + 1])
         
-        if (error >= start and error <= end):
+        if (start <= error <= end):
             correct_root_causes += 1
             correct_cause = True
         else:
@@ -155,7 +161,7 @@ def visualize():
     print('Average number of explanations per error: ' + str(round(avg_explanations, 2)))
     print('Total number of root causes: ' + str(root_causes_found))
     print('Correct root causes: ' + str(correct_root_causes))
-    print('yRCA precision 1 (total root causes / corrected ones): ' + str(round(precision1, 2)))
+    print('yRCA precision 1 (correct root causes / root causes found): ' + str(round(precision1, 2)))
     print('yRCA precision 2 (errors with correct root causes / total errors): ' + str(round(precision2, 2)))
 
 # Main function
