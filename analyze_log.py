@@ -56,17 +56,15 @@ def analyze():
         error_file = open('error.json', 'w')
         error_file.write(line)
         error_file.close()
-        
+
         # Get error timestamp for further checks
         with open('error.json') as json_file:
             data = json.load(json_file)
         timestamp = str(data['message'].split(' - ')[0])
-        
+
         # Execute yRCA and let it explain the error
         yrca_output = str(subprocess.check_output('./scripts/yrca.sh', shell=True))[2:-3]
 
-        print(yrca_output)
-        
         # Looking for root cause and compare it with chaos_test.log
         # We can distinguish three possible yrca outputs:
         # 1. Found no failure
@@ -82,11 +80,16 @@ def analyze():
             if (yrca_output[0:2] == '[1'):
                 root_causes_found += 1
                 root_cause_service = str(yrca_output.split(':')[-2].split('>')[-1].strip())
-                cause = searchContainer(root_cause_service, timestamp, yrca_output, line)
+                cause = searchContainer(root_cause_service, timestamp)
                 
                 # Count if the error has a scorrect root cause
                 if (cause):
                     errors_correct_rootcause += 1
+                else:
+                    print('yRCA output:')
+                    print(yrca_output)
+                    print('\nAssociated error:')
+                    print(line + '\n')
             else:
                 found_explanations = yrca_output.split('[0.')
                 found_explanations.pop(0)
@@ -95,15 +98,20 @@ def analyze():
                 for explanation in found_explanations:
                     root_causes_found += 1
                     root_cause_service = str(explanation.split(':')[-2].split('>')[-1].strip())
-                    causes.append(searchContainer(root_cause_service, timestamp, yrca_output, line))
+                    causes.append(searchContainer(root_cause_service, timestamp))
                 
                 # Count if the error has all corrected root causes
                 if all(cause is True for cause in causes):
                     errors_correct_rootcause += 1
+                else:
+                    print('yRCA output:')
+                    print(yrca_output)
+                    print('\nAssociated error:')
+                    print(line + '\n')
 
 # Search inside chaos_test.log file if serviceName has been removed
 # in that period. If found, +1 on correct_root_causes
-def searchContainer(serviceName, timestamp, yrca_output, error_json):
+def searchContainer(serviceName, timestamp):
     global correct_root_causes
     global removed_services
     
@@ -125,11 +133,6 @@ def searchContainer(serviceName, timestamp, yrca_output, error_json):
         if (start <= error <= end):
             correct_root_causes += 1
             correct_cause = True
-        else:
-            print('yRCA output:')
-            print(yrca_output)
-            print('\nAssociated error:')
-            print(error_json + '\n')
     
     return correct_cause
 
