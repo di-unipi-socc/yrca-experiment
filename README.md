@@ -41,4 +41,4 @@ To execute the script make sure to install Python 3 and execute it according to 
 ```
 
 ## Help
-For any doubts or support, feel free to contact me via email at luca.roveroni@studenti.unipi.it
+For any doubts or support, feel free to contact me via email at l.roveroni@studenti.unipi.it
