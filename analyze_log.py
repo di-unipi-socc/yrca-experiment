@@ -4,11 +4,13 @@ from dateutil import parser
 
 # Global vars
 total_errors = 0
+no_found_errors = 0
 errors_correct_rootcause = 0
 root_causes_found = 0
 correct_root_causes = 0
 explanations = []
 removed_services = {}
+services = ['adservice', 'cartservice', 'checkoutservice', 'currencyservice', 'emailservice', 'paymentservice', 'productcatalogservice', 'recommendationservice', 'shippingservice', 'redis-cart']
 
 folder_path = 'tests/chaos/test1/'
 
@@ -45,6 +47,8 @@ def analyze():
     global explanations
     global root_causes_found
     global errors_correct_rootcause
+    global no_found_errors
+    global services
     
     # Read errors
     log_file = open('all_errors.json', 'r')
@@ -80,7 +84,13 @@ def analyze():
             if (yrca_output[0:2] == '[1'):
                 root_causes_found += 1
                 root_cause_service = str(yrca_output.split(':')[-2].split('>')[-1].strip())
-                cause = searchContainer(root_cause_service, timestamp)
+                cause = False
+
+                if (root_cause_service in services):
+                    cause = searchContainer('onlineBoutique_' + root_cause_service, timestamp)
+                else:
+                    root_cause_service = str(yrca_output.split(':')[1].strip())
+                    cause = searchContainer('onlineBoutique_' + root_cause_service, timestamp)
                 
                 # Count if the error has a scorrect root cause
                 if (cause):
@@ -97,8 +107,13 @@ def analyze():
                 
                 for explanation in found_explanations:
                     root_causes_found += 1
-                    root_cause_service = str(explanation.split(':')[-2].split('>')[-1].strip())
-                    causes.append(searchContainer(root_cause_service, timestamp))
+                    root_cause_service = str(yrca_output.split(':')[-2].split('>')[-1].strip())
+
+                    if (root_cause_service in services):
+                        causes.append(searchContainer('onlineBoutique_' + root_cause_service, timestamp))
+                    else:
+                        root_cause_service = str(yrca_output.split(':')[1].strip())
+                        causes.append(searchContainer('onlineBoutique_' + root_cause_service, timestamp))
                 
                 # Count if the error has all corrected root causes
                 if all(cause is True for cause in causes):
@@ -108,6 +123,12 @@ def analyze():
                     print(yrca_output)
                     print('\nAssociated error:')
                     print(line + '\n')
+        else:
+            no_found_errors += 1
+            print('yRCA output:')
+            print(yrca_output)
+            print('\nAssociated error:')
+            print(line + '\n')
 
 # Search inside chaos_test.log file if serviceName has been removed
 # in that period. If found, +1 on correct_root_causes
@@ -120,10 +141,10 @@ def searchContainer(serviceName, timestamp):
     correct_cause = False
 
     # Get timestamps for service down period if service exists
-    if 'onlineBoutique_' + serviceName not in removed_services:
+    if serviceName not in removed_services:
         return correct_cause
     
-    remotion_period = removed_services['onlineBoutique_' + serviceName]
+    remotion_period = removed_services[serviceName]
 
     # Compare error timestamp with down time period
     for i in range(0, len(remotion_period), 2):
@@ -142,30 +163,28 @@ def visualize():
     global root_causes_found
     global errors_correct_rootcause
     global correct_root_causes
-    
-    # Save values to output file
-    output_line = 'Explanations: ' + str(explanations) + '\n'
-    output_line += 'Total Errors: ' + str(total_errors) + '\n'
-    output_line += 'Root causes: ' + str(root_causes_found) + '\n'
-    output_line += 'Errors with correct root causes: ' + str(errors_correct_rootcause) + '\n'
-    output_line += 'Correct root causes: ' + str(correct_root_causes) + '\n'
+    global no_found_errors
 
     output = open('analyze.out', 'w')
-    output.write(output_line)
-    output.close()
-    
-    # Define average number of explanation
+
+    # Precision formulas
     avg_explanations = sum(explanations) / total_errors
     precision1 = correct_root_causes / root_causes_found
     precision2 = errors_correct_rootcause / total_errors
     
-    print('Total number of errors: ' + str(total_errors))
-    print('Total number of explanations: ' + str(sum(explanations)))
-    print('Average number of explanations per error: ' + str(round(avg_explanations, 2)))
-    print('Total number of root causes: ' + str(root_causes_found))
-    print('Correct root causes: ' + str(correct_root_causes))
-    print('yRCA precision 1 (correct root causes / root causes found): ' + str(round(precision1, 2)))
-    print('yRCA precision 2 (errors with correct root causes / total errors): ' + str(round(precision2, 2)))
+    # Build final statistics and save them
+    output_line = 'Total number of explanations: ' + str(sum(explanations)) + '\n'
+    output_line += 'Total number of errors: ' + str(total_errors) + '\n'
+    output_line += 'Errors without explanation: ' + str(no_found_errors) + '\n'
+    output_line += 'Total number of root causes: ' + str(root_causes_found) + '\n'
+    output_line += 'Errors with correct root causes: ' + str(errors_correct_rootcause) + '\n'
+    output_line += 'Correct root causes: ' + str(correct_root_causes) + '\n'
+    output_line += 'Average number of explanations per error: ' + str(round(avg_explanations, 2)) + '\n'
+    output_line += 'yRCA Precision 1 (correct root causes / root causes found): ' + str(round(precision1, 2) * 100) + '%\n'
+    output_line += 'yRCA precision 2 (errors with correct root causes / total errors): ' + str(round(precision2, 2) * 100) + '%\n'
+
+    output.write(output_line)
+    output.close()
 
 # Main function
 def main():
