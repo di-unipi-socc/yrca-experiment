@@ -10,7 +10,7 @@ num_services = 0
 tot_services = 0
 cycles = 0
 seconds = 0
-dont_choose = ['onlineBoutique_logstash', 'onlineBoutique_frontend', 'onlineBoutique_loadgenerator']
+dont_choose = ['onlineBoutique_logstash', 'onlineBoutique_frontend', 'onlineBoutique_loadgenerator', 'onlineBoutique_redis-cart']
 
 # Help function
 def help():
@@ -80,7 +80,6 @@ def run():
             position = random.randint(1, tot_services) + 1
             command = "docker service ls | head -" + str(position) + " | tail -1 | awk '{print $2}'"
             service_name = str(subprocess.check_output(command, shell=True))[2:-3]
-            print(service_name)
             
             # Avoid removing logstash, loadgenerator and frontend containers
             if (service_name not in dont_choose and service_name not in removed_services):
@@ -95,6 +94,17 @@ def run():
         # Reactivate removed services
         for service in removed_services:
             subprocess.check_output('docker service scale ' + service + '=1', shell=True)
+            time.sleep(1)
+            container_insertion = False
+
+            # Verify if the container has been added    
+            while(not container_insertion):
+                insertion_output = str(subprocess.check_output("docker service ls -f name=" + service + " | awk '{print $2}'", shell=True))
+
+                if(insertion_output.find(service) != -1):
+                    container_insertion = True
+
+            # Log the container insertion
             log_file.write(service + ' added at ' + str(datetime.now())[:-3] + '\n')
 
     print('└──────────────────────────── FINISH ─────────────────────────────\n')

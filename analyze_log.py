@@ -96,10 +96,13 @@ def analyze():
                 if (cause):
                     errors_correct_rootcause += 1
                 else:
+                    print('---')
                     print('yRCA output:')
                     print(yrca_output)
+                    print('Found root cause:'  + root_cause_service)
                     print('\nAssociated error:')
                     print(line + '\n')
+                    print('---')
             else:
                 found_explanations = yrca_output.split('[0.')
                 found_explanations.pop(0)
@@ -119,16 +122,22 @@ def analyze():
                 if all(cause is True for cause in causes):
                     errors_correct_rootcause += 1
                 else:
+                    print('---')
                     print('yRCA output:')
                     print(yrca_output)
+                    print('Found root cause:'  + root_cause_service)
                     print('\nAssociated error:')
                     print(line + '\n')
+                    print('---')
         else:
             no_found_errors += 1
+            print('---')
             print('yRCA output:')
             print(yrca_output)
+            print('No failure found by yRCA')
             print('\nAssociated error:')
             print(line + '\n')
+            print('---')
 
 # Search inside chaos_test.log file if serviceName has been removed
 # in that period. If found, +1 on correct_root_causes
