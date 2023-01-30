@@ -90,11 +90,10 @@ def run():
 
         # Wait
         time.sleep(seconds)
-
+        
         # Reactivate removed services
         for service in removed_services:
             subprocess.check_output('docker service scale ' + service + '=1', shell=True)
-            time.sleep(1)
             container_insertion = False
 
             # Verify if the container has been added    
@@ -103,9 +102,14 @@ def run():
 
                 if(insertion_output.find(service) != -1):
                     container_insertion = True
-
-            # Log the container insertion
+        
+        time.sleep(5)
+        
+        # Log the container insertion
+        for service in removed_services:
             log_file.write(service + ' added at ' + str(datetime.now())[:-3] + '\n')
+        
+        time.sleep(10)
 
     print('└──────────────────────────── FINISH ─────────────────────────────\n')
     log_file.write('\nCHAOS TEST ENDED\n')
