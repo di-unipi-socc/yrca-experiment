@@ -103,7 +103,7 @@ def run():
                 if(insertion_output.find(service) != -1):
                     container_insertion = True
         
-        time.sleep(5)
+        time.sleep(60)
         
         # Log the container insertion
         for service in removed_services:
