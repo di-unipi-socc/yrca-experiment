@@ -12,7 +12,7 @@ explanations = []
 removed_services = {}
 services = ['adservice', 'cartservice', 'checkoutservice', 'currencyservice', 'emailservice', 'paymentservice', 'productcatalogservice', 'recommendationservice', 'shippingservice', 'redis-cart']
 
-folder_path = 'tests/chaos/test1/'
+folder_path = 'tests/chaos/test3/'
 
 # Parse log file and extract error logs only
 def prepare():
@@ -189,8 +189,8 @@ def visualize():
     output_line += 'Errors with correct root causes: ' + str(errors_correct_rootcause) + '\n'
     output_line += 'Correct root causes: ' + str(correct_root_causes) + '\n'
     output_line += 'Average number of explanations per error: ' + str(round(avg_explanations, 2)) + '\n'
-    output_line += 'yRCA Precision 1 (correct root causes / root causes found): ' + str(round(precision1, 2) * 100) + '%\n'
-    output_line += 'yRCA precision 2 (errors with correct root causes / total errors): ' + str(round(precision2, 2) * 100) + '%\n'
+    output_line += 'yRCA Root Cause Precision (correct root causes / root causes found): ' + str(round(precision1, 2) * 100) + '%\n'
+    output_line += 'yRCA Errors Precision (errors with correct root causes / total errors): ' + str(round(precision2, 2) * 100) + '%\n'
 
     output.write(output_line)
     output.close()

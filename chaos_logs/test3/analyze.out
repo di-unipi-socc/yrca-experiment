@@ -1,0 +1,9 @@
+Total number of explanations: 1287
+Total number of errors: 1287
+Errors without explanation: 0
+Total number of root causes: 1287
+Errors with correct root causes: 1287
+Correct root causes: 1287
+Average number of explanations per error: 1.0
+yRCA Root Cause Precision (correct root causes / root causes found): 100.0%
+yRCA Errors Precision (errors with correct root causes / total errors): 100.0%
