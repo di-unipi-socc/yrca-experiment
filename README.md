@@ -1,5 +1,5 @@
 # yRCA Experiments
-The following repository is used to document all the performed scenario analyzed in Luca Roveroni's Master Thesis project.
+This repository contains the source code of the scenarios/chaos testing run to assess the effectiveness of yRCA in explaining manually injected/randomly generated failures.
 
 ##  Online Boutique
 All the available material refers to [Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) application that have been modified to be [log-enabled](https://github.com/di-unipi-socc/log-enabled-online-boutique).
